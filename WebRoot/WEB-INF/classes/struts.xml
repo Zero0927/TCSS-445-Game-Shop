@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+	"http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+
+	<package name="GameShop" namespace="/" extends="json-default">
+		
+		<global-results>
+    		<result name="login" type="redirectAction">login</result>
+    		<result name="shop" type="redirectAction">shop</result>
+    		<result name="favoriteList" type="redirectAction">favoriteList</result>
+    		<result name="shoppingCart" type="redirectAction">shoppingCart</result>
+		</global-results>
+		
+		<action name="login" class="action.AccountAction" method="login">
+    		<result name="login">/WEB-INF/login.jsp</result>
+		</action>
+		<action name="register" class="action.AccountAction" method="register">
+    		<result name="register">/WEB-INF/register.jsp</result>
+		</action>
+		<action name="shop" class="action.ShopAction" method="shop">
+    		<result name="shop">/WEB-INF/shop.jsp</result>
+		</action>
+		<action name="favorite*" class="action.AccountAction" method="favorite{1}">
+		</action>
+		<action name="buyCar*" class="action.ShopAction" method="buyCar{1}">
+		</action>
+		<action name="favoriteList" class="action.AccountAction" method="favoriteList">
+			<result name="favoriteList">/WEB-INF/favoriteList.jsp</result>
+		</action>
+		<action name="shoppingCart" class="action.ShopAction" method="shoppingCart">
+			<result name="shoppingCart">/WEB-INF/shoppingCart.jsp</result>
+		</action>
+		<action name="pay" class="action.ShopAction" method="pay">
+			<result name="pay">/WEB-INF/pay.jsp</result>
+			<result name="invoice" >/WEB-INF/invoice.jsp</result>
+		</action>
+		<action name="invoice" class="action.ShopAction" method="invoice">
+			<result name="invoice">/WEB-INF/invoice.jsp</result>
+		</action>
+		<action name="game" class="action.AccountAction" method="myGame">
+			<result name="game">/WEB-INF/game.jsp</result>
+		</action>
+		<action name="rating" class="action.AccountAction" method="rating">
+    		<result name="game" type="redirectAction">game</result>
+		</action>
+	</package>
+
+</struts>    

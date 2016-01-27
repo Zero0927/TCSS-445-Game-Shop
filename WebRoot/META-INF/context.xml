@@ -1,0 +1,12 @@
+<!-- 局部数据源连接池 -->
+<Context path="/GameShop" docBase="GameShop" debug="0">
+	<Resource name="jdbc/GameShop" auth="Container"
+			type="javax.sql.DataSource"
+			driverClassName="com.mysql.jdbc.Driver"
+			url="jdbc:mysql://localhost:3306/gamestart"
+			username="root"
+			password="1234"
+			maxActive="200"
+			maxIdle="50"
+			maxWait="3000" />
+</Context>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+
+	<!-- 指向Hibernate配置文件 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="configLocation"
+			value="classpath:hibernate.cfg.xml">
+		</property>
+	</bean>
+	
+	<!-- 配置HibernateTemplate对象 -->
+	<bean id="hibernateTemplate"
+		class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<!-- 配置事务管理对象 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory"/>
+		</property>
+	</bean>
+	
+	<!-- 配置事务拦截器 -->
+	<bean id="transactionInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">     
+        <property name="transactionManager">      
+        	<ref bean="transactionManager" />     
+		</property>
+ 		<!-- 配置事务属性 -->
+       <property name="transactionAttributes">
+          <props>
+            <prop key="get*">PROPAGATION_REQUIRED, readOnly</prop>
+            <prop key="getDirInfo*">PROPAGATION_REQUIRED</prop>
+            <prop key="*">PROPAGATION_REQUIRED</prop>
+          </props>
+       </property>
+    </bean>
+    
+    <!-- 配置dao数据库访问层 -->
+	
+	<!-- 自动代理数据库访问层 -->
+	<bean
+		class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<!-- 需要实现的接口 -->
+		<property name="beanNames">
+			<list>
+				<value>accountDAO</value>
+				<value>customersDAO</value>
+				<value>favoriteListDAO</value>
+				<value>gameDAO</value>
+				<value>gameOrderDAO</value>
+				<value>invoiceDAO</value>
+				<value>ratingDAO</value>
+			</list>
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="accountDAO" class="dao.impl.AccountDAOImpl">
+		<constructor-arg>
+			<ref bean="hibernateTemplate" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="customersDAO" class="dao.impl.CustomersDAOImpl">
+		<constructor-arg>
+			<ref bean="hibernateTemplate" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="favoriteListDAO" class="dao.impl.FavoriteListDAOImpl">
+		<constructor-arg>
+			<ref bean="hibernateTemplate" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="gameDAO" class="dao.impl.GameDAOImpl">
+		<constructor-arg>
+			<ref bean="hibernateTemplate" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="gameOrderDAO" class="dao.impl.GameOrderDAOImpl">
+		<constructor-arg>
+			<ref bean="hibernateTemplate" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="invoiceDAO" class="dao.impl.InvoiceDAOImpl">
+		<constructor-arg>
+			<ref bean="hibernateTemplate" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="ratingDAO" class="dao.impl.RatingDAOImpl">
+		<constructor-arg>
+			<ref bean="hibernateTemplate" />
+		</constructor-arg>
+	</bean>
+	
+	<!-- 配置service业务逻辑层 -->
+	
+	<bean id="accountService" class="service.impl.AccountServiceImpl">
+		<constructor-arg>
+			<ref bean="accountDAO" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="customersDAO" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="shopService" class="service.impl.ShopServiceImpl">
+		<constructor-arg>
+			<ref bean="favoriteListDAO" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="gameDAO" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="gameOrderDAO" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="invoiceDAO" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="ratingDAO" />
+		</constructor-arg>
+	</bean>
+    
+    <!-- 配置ServiceManager -->
+	<bean id="serviceManager" class="service.ServiceManager">
+		<property name="accountService">
+			<ref bean="accountService" />
+		</property>
+		<property name="shopService">
+			<ref bean="shopService" />
+		</property>
+	</bean>
+    
+</beans>
